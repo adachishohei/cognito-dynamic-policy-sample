@@ -132,3 +132,4 @@ Next, you can use AWS Serverless Application Repository to deploy ready to use A
 # cognito-dynamic-policy-sample
 # cognito-dynamic-policy-sample
 # cognito-dynamic-policy-sample
+# cognito-dynamic-policy-sample
