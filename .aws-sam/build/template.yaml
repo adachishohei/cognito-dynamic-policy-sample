@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda Function.
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: LambdaFunction
+      Role: arn:aws:iam::261812635110:role/cognito-dynamic-policy-role
+      Runtime: nodejs12.x
+      Handler: index.handler

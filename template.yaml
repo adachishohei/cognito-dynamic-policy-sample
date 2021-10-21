@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cognito-dynamic-sample
+
+  Sample SAM Template for cognito-dynamic-sample
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  ReadUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./get-user/
+      Handler: app.lambda_handler
+      Runtime: python3.6
+
+Outputs:
+  ReadUserFunction:
+    Description: "Get User Function ARN"
+    Value: !GetAtt ReadUserFunction.Arn
+  ReadUserFunctionIamRole:
+    Description: "Implicit IAM Role created for Get User function"
+    Value: !GetAtt ReadUserFunctionRole.Arn

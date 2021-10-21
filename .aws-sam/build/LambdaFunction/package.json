@@ -1,0 +1,15 @@
+{
+  "name": "read-user-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "read-user-data.js",
+  "dependencies": {
+    "aws-sdk": "^2.1012.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
