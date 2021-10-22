@@ -1,10 +1,84 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Lambda Function.
+Transform: AWS::Serverless-2016-10-31
+Description: 'cognito-dynamic-sample
+
+  Sample SAM Template for cognito-dynamic-sample
+
+  '
+Globals:
+  Function:
+    Timeout: 3
 Resources:
-  LambdaFunction:
-    Type: AWS::Lambda::Function
+  ReadUserFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      Code: LambdaFunction
-      Role: arn:aws:iam::261812635110:role/cognito-dynamic-policy-role
-      Runtime: nodejs12.x
-      Handler: index.handler
+      CodeUri: ReadUserFunction
+      Handler: app.lambda_handler
+      Runtime: python3.6
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: UserApi
+            Path: /user
+            Method: GET
+  UserApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:ap-northeast-1:261812635110:userpool/ap-northeast-1_UlEqYl7Ou
+            AuthType: COGNITO_USER_POOLS
+            CognitoAuthorizationIdentity:
+              Header: Aurhorization
+        DefaultAuthorizer: CognitoAuthorizer
+        InvokeRole: CALLER_CREDENTIALS
+        AddDefaultAuthorizerToCorsPreflight: false
+        ApiKeyRequired: false
+        ResourcePolicy:
+          CustomStatements:
+          - Effect: Allow
+            Principal: '*'
+            Action: execute-api:Invoke
+            Resource: execute-api:/Prod/*
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: Sample Hello API
+          version: 1.0.0
+        schemes:
+        - https
+        paths:
+          /user:
+            get:
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                uri:
+                  Fn::Join:
+                  - ''
+                  - - arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/
+                    - Fn::GetAtt:
+                      - ReadUserFunction
+                      - Arn
+                    - /invocations
+                passthroughBehavior: when_no_templates
+                httpMethod: POST
+                type: aws_proxy
+Outputs:
+  ReadUserFunction:
+    Description: Get User Function ARN
+    Value:
+      Fn::GetAtt:
+      - ReadUserFunction
+      - Arn
+  ReadUserFunctionIamRole:
+    Description: Implicit IAM Role created for Get User function
+    Value:
+      Fn::GetAtt:
+      - ReadUserFunctionRole
+      - Arn
